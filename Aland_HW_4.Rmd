@@ -1,0 +1,142 @@
+---
+title: "Aland_HW_4"
+author: "Aland"
+date: "2/23/2022"
+output: html_document
+---
+
+```{r, include=FALSE}
+library(palmerpenguins)
+library(rstatix)
+library(dplyr)
+library(ggplot2)
+```
+
+##creating data for usage
+```{r, echo=FALSE, include=FALSE}
+
+Adelie_mass_given = penguins %>% 
+  dplyr::filter(species=="Adelie") %>%
+  select(body_mass_g)
+  
+ summary(Adelie_mass_given) 
+ 
+ Adelie_given_max = 4775 
+
+ Chinstrap_mass_given = penguins %>%
+   dplyr::filter(species=="Chinstrap") %>%
+   select(body_mass_g)
+ 
+ summary(Chinstrap_mass_given) #adult male max 
+
+ Chinstrap_given_max = 4800
+ 
+ Adelie_mass_lit = 5000 #adult male max
+ 
+ Chinstrap_mass_lit = 4453
+
+ #Choinstrap_lit is 4453, given is 4800, both maxes
+ #Adelie lit is 5000, given is 4775
+ 
+ Chinstrap_masses= data.frame(Chinstrap_mass_given, Chinstrap_mass_lit)
+ Adelie_masses= data.frame(Adelie_mass_given, Adelie_mass_lit)
+
+```
+
+
+```{r, echo=FALSE}
+Adelie_comp_plot = ggplot() +
+geom_histogram(data = Adelie_masses, aes(y=Adelie_masses$body_mass_g)) +
+  geom_histogram(data = Adelie_masses, aes(y=Adelie_masses$Adelie_mass_lit, fill = Adelie_mass_lit))
+
+Adelie_comp_plot
+
+Chinstrap_comp_plot = ggplot() +
+geom_histogram(data = Chinstrap_masses, aes(y=Chinstrap_masses$body_mass_g)) + 
+geom_histogram(data = Chinstrap_masses, aes(y=Chinstrap_masses$Chinstrap_mass_lit, fill = Chinstrap_mass_lit))
+
+
+Chinstrap_comp_plot
+```
+
+
+```{r}
+t.test(Adelie_masses$body_mass_g, Adelie_masses$Adelie_mass_lit, var.equal=T)
+
+```
+Q.1 Adelie Mass Comparison
+
+- After running an idependent two tailed t-test, the Adelie masses from the palmer dataset and the observed value from the literature are significantly different from each other. The two sample t test yielded a p value of 2.2e-16, which is FAR less than 0.05. 
+
+
+
+```{r}
+
+t.test(Chinstrap_masses$body_mass_g, Chinstrap_masses$Chinstrap_mass_lit, var.equal=T)
+
+
+```
+
+Q.2 Chinstrap
+
+- After running an idependent two tailed t-test, the Chinstrap masses from the palmer dataset and the observed value from the literature are significantly different from each other. The two sample t test yielded a p value of 2.2e-16, which is FAR less than 0.05. 
+
+```{r}
+
+t.test(Chinstrap_masses$body_mass_g, Adelie_masses$body_mass_g, var.equal=T)
+
+
+```
+
+Q.3 
+
+- After running an idependent two tailed t-test, the Chinstrap masses from the palmer dataset and the Adelie masses from the same dataset are not significantly different from each other. The two sample t test yielded a p value of 0.6119, which is much higher than than 0.05. 
+
+
+```{r, echo=FALSE}
+Penguin_combo = penguins %>% 
+  dplyr::select(body_mass_g, flipper_length_mm)
+
+
+Penguin_combo
+
+ggplot() +
+  geom_point(data = Penguin_combo, aes(x=Penguin_combo$body_mass_g, y=Penguin_combo$flipper_length_mm))
+
+
+  
+cor(x=Penguin_combo$body_mass_g, y=Penguin_combo$flipper_length_mm)
+
+cor.test(x=Penguin_combo$body_mass_g, y=Penguin_combo$flipper_length_mm)
+
+```
+Q.4
+
+- Comparison of the flipper length and body mass of all penguin species combined yielded interesting results. visually in the scatterplot, as body mass increased, flipper length appeared to increase on a linear pattern. When a Pearson's product-moment correlation test is run, the "cor" value comes out to a 0.871. This value is very strong, and suits the linear pattern fromt the scatterplot. 
+
+
+
+```{r}
+
+Adelie_set = penguins %>%
+  filter(species=="Adelie") %>%
+  select(body_mass_g, flipper_length_mm)
+
+Chinstrap_set = penguins %>%
+  filter(species=="Chinstrap") %>%
+  select(body_mass_g, flipper_length_mm)
+
+Gentoo_set = penguins %>%
+  filter(species=="Gentoo") %>%
+  select(body_mass_g, flipper_length_mm)
+
+cor.test(x=Adelie_set$body_mass_g, y=Adelie_set$flipper_length_mm)
+
+cor.test(x=Chinstrap_set$body_mass_g, y=Chinstrap_set$flipper_length_mm)
+
+cor.test(x=Gentoo_set$body_mass_g, y=Gentoo_set$flipper_length_mm)
+
+
+```
+Q.5
+- Pearson's product-moment correlation test was run on the relationship between flipper length and body mass for all 3 species of penguins. Adelie's had a cor value of 0.468, Chinstraps had a cor value of 0.641, and Gentoos had a cor value of 0.702. while all meaningful correlations, the Gentoo penguins exhinited the strongest correlation between the two factors. 
