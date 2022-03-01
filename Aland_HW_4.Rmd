@@ -74,7 +74,6 @@ Q.1 Adelie Mass Comparison
 
 t.test(Chinstrap_masses$body_mass_g, Chinstrap_masses$Chinstrap_mass_lit, var.equal=T)
 
-
 ```
 
 Q.2 Chinstrap
